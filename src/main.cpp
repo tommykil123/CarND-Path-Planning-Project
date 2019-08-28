@@ -129,16 +129,37 @@ int main() {
 		f_too_close = true;
 	      }
 	    }
-	    // Front Left Object
+	    // ALL Left Objects
 	    if (d < (2 + 4*(lane-1) + 2) && d > (2 + 4*(lane-1) - 2)) {
+	      // Front Left Object
+	      check_car_s += ((double)prev_size * 0.02 * check_speed);
 	      if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
 		fl_too_close = true;
 	      }
+	      // Left Object
+	      else if (check_car_s <= 5 && check_car_s >= -5) {
+                l_too_close = true;
+	      }
+	      // Rear Left Object
+	      else if ((check_car_s < car_s) && ((car_s - check_car_s) < 15)) {
+		rl_too_close = true;
+	      }
 	    }
-	    // Front Right Object
+
+	    // ALL Right Objects
 	    if (d < (2 + 4*(lane+1) + 2) && d > (2 + 4*(lane+1) - 2)) {
+	      // Front Right Object
 	      if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
+		check_car_s += ((double)prev_size * 0.02 * check_speed);
 		fr_too_close = true;
+	      }
+	      // Right Object
+ 	      else if (check_car_s <= 5 && check_car_s >= -5) {
+		r_too_close = true;
+	      }
+	      // Rear Right Object
+	      else if ((check_car_s < car_s) && ((car_s - check_car_s) < 15)) {
+		rr_too_close = true;
 	      }
 	    }
 	  }
@@ -146,15 +167,19 @@ int main() {
 	  if (f_too_close) {
 	    ref_vel -= 0.224;
 	    if (lane == 1) {
-	       if (fl_too_close == false) {
+	       if (fl_too_close == false && l_too_close == false  && rl_too_close == false) {
 	         lane = 0;
-	       } else if (fr_too_close == false) {
+	       } else if (fr_too_close == false && r_too_close == false && rr_too_close == false) {
 		 lane = 2;
 	       }
 	    } else if (lane == 0) {
-	       lane = 1;
+	       if (fr_too_close == false && r_too_close == false && rr_too_close == false) {
+		lane = 1;
+	       }
             } else if (lane == 2) {
-	       lane = 1;
+	       if (fl_too_close == false && l_too_close == false && rl_too_close == false) {
+		lane = 1;
+	       }
 	    }
 	  } else if (ref_vel < 49.5) {
 	    ref_vel += 0.224;
