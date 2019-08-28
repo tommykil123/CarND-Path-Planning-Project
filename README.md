@@ -62,9 +62,9 @@ the path has processed since last time.
 ## Implementation Details
 There are several key concepts that need to be addressed before diving into the implementation of this project.
 1. Frenet Coordinates 
-![Cartesian Image](/images/Cartesian_Example.png)  
+![Cartesian Image](/images/CartesianExample.png)  
 Example of Cartesian
-![Frenet Image](/images/Frenet_Example.png)  
+![Frenet Image](/images/FrenetExample.png)  
 Example of Frenet  
 * Because of the complexity involved in defining a path created by vehicles (eg: vehicle going in an 'infiniy' loop), the frenet coordinate system is prefered. A frenet path can be defined by the the longitudinal distance traveled, as well as the lateral distance traveled.
 2. Basic Kinematic Equations
