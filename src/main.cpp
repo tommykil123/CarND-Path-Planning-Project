@@ -116,28 +116,41 @@ int main() {
 	  // find ref_v to use
 	  for (int i = 0; i < sensor_fusion.size(); i++) {
 	    float d = sensor_fusion[i][6];
+	    double vx = sensor_fusion[i][3];
+	    double vy = sensor_fusion[i][4];
+	    double check_speed = sqrt(vx*vx + vy*vy);
+	    double check_car_s = sensor_fusion[i][5];
 	    // Front Object: car is in my lane (+- 2 meters)
 	    if (d < (2 + 4*lane + 2) && d > (2 + 4*lane - 2)) {
-	      double vx = sensor_fusion[i][3];
-	      double vy = sensor_fusion[i][4];
-	      double check_speed = sqrt(vx*vx + vy*vy);
-	      double check_car_s = sensor_fusion[i][5];
-
 	      // if using previous points can project s value out
 	      check_car_s += ((double)prev_size * 0.02 * check_speed);
-
 	      // check s values greater than mine and s gap
 	      if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
 		f_too_close = true;
 	      }
 	    }
 	    // Front Left Object
+	    if (d < (2 + 4*(lane-1) + 2) && d > (2 + 4*(lane-1) - 2)) {
+	      if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
+		fl_too_close = true;
+	      }
+	    }
+	    // Front Right Object
+	    if (d < (2 + 4*(lane+1) + 2) && d > (2 + 4*(lane+1) - 2)) {
+	      if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
+		fr_too_close = true;
+	      }
+	    }
 	  }
 
 	  if (f_too_close) {
 	    ref_vel -= 0.224;
 	    if (lane == 1) {
-	       lane = 0;
+	       if (fl_too_close == false) {
+	         lane = 0;
+	       } else if (fr_too_close == false) {
+		 lane = 2;
+	       }
 	    } else if (lane == 0) {
 	       lane = 1;
             } else if (lane == 2) {
